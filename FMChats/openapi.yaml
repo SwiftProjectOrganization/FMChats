@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: FMChats Sync API
+  version: 1.0.0
+  description: API for syncing chats between client and server
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /chats:
+    get:
+      summary: Get all chats
+      operationId: getChats
+      responses:
+        '200':
+          description: List of all chats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatDTO'
+    post:
+      summary: Upload a chat
+      operationId: uploadChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatDTO'
+      responses:
+        '201':
+          description: Chat created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatDTO'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /chats/{chatId}:
+    get:
+      summary: Get a specific chat
+      operationId: getChat
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Chat details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatDTO'
+        '404':
+          description: Chat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ChatDTO:
+      type: object
+      required:
+        - id
+        - title
+        - timestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionDTO'
+
+    QuestionDTO:
+      type: object
+      required:
+        - id
+        - questionText
+        - timestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+        questionText:
+          type: string
+        answerText:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
