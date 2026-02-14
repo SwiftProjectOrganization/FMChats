@@ -13,11 +13,13 @@ import Foundation
 class ChatAPIClient {
     static let shared = ChatAPIClient()
     
-    private let baseURL: URL
+    private var baseURL: URL
     private let session: URLSession
     
     private init(baseURL: String = "http://Rob-Travel-M5.local:8082") {
-        self.baseURL = URL(string: baseURL)!
+        // Load saved server address from UserDefaults if available
+        let savedAddress = UserDefaults.standard.string(forKey: "serverAddress") ?? baseURL
+        self.baseURL = URL(string: savedAddress)!
         
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 30
@@ -25,9 +27,15 @@ class ChatAPIClient {
         self.session = URLSession(configuration: configuration)
     }
     
-    /// Configure the base URL for the API
-    func configure(baseURL: String) -> ChatAPIClient {
-        return ChatAPIClient(baseURL: baseURL)
+    /// Update the base URL for the API
+    func updateBaseURL(_ urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        self.baseURL = url
+    }
+    
+    /// Get the current base URL
+    var currentBaseURL: String {
+        return baseURL.absoluteString
     }
     
     // MARK: - API Methods

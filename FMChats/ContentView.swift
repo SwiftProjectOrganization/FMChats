@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var showingAddChat = false
     @State private var showingUploadSync = false
     @State private var showingDownloadSync = false
+    @State private var showingServerSettings = false
 
     var body: some View {
         NavigationSplitView {
@@ -45,6 +46,10 @@ struct ContentView: View {
                         Button(action: { showingDownloadSync = true }) {
                             Label("Download from Server", systemImage: "arrow.down.circle")
                         }
+                        Divider()
+                        Button(action: { showingServerSettings = true }) {
+                            Label("Server Settings", systemImage: "server.rack")
+                        }
                     } label: {
                         Label("Sync", systemImage: "arrow.triangle.2.circlepath")
                     }
@@ -63,6 +68,9 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showingDownloadSync) {
                 DownloadSyncView()
+            }
+            .sheet(isPresented: $showingServerSettings) {
+                ServerSettingsView()
             }
         } detail: {
             Text("Select a chat")
