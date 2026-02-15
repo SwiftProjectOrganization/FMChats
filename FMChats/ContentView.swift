@@ -21,7 +21,7 @@ struct ContentView: View {
             List {
                 ForEach(chats) { chat in
                     NavigationLink {
-                        ChatDetailView(chat: chat)
+                        QuestionsListView(chat: chat)
                     } label: {
                         chatRowView(for: chat)
                     }
